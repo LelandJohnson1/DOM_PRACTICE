@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+
+<body>
+    <style> 
+
+    *{margin: 0;
+      padding: 0;
+    
+    }
+
+        .container{
+            
+            width:20%;
+            height: 15rem;
+            margin-left: 5%;
+            margin-top: 5%;
+            font-size: 1.5rem;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center; 
+        }
+
+        .boxes{
+                
+            list-style: none;
+            background-color: crimson;
+            width:100%;
+            height: 25%;
+            border: darkred solid 0.1rem;
+            box-sizing: border-box;
+            padding-top: 1rem;
+            display: none;
+            position: relative;
+            z-index: 1;
+                
+    }
+
+        .first_box{
+                    
+            list-style: none;
+            background-color: crimson;
+            width:100%;
+            height: 25%;
+            border: darkred solid 0.1rem;
+            box-sizing: border-box;
+            padding-top: 1rem;
+            display: block;
+            position: relative;
+            z-index: 0;
+                        
+            }
+
+            .img_container{
+                width:100%;
+                display:inline-block;
+                overflow: hidden;
+                position: relative;
+                opacity:1;
+            }
+
+            .side_containers{
+
+                width:100%;
+                display:inline-block;
+                overflow: hidden;
+                position: relative;
+                box-sizing: border-box;
+                opacity:0;
+                margin-left: 25rem;
+                
+            }
+            
+            #slideshow_box{
+                width:25%;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            #drag_box{
+
+                background-color: blueviolet;
+                color:chartreuse;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+                width:10%;
+                height: 5rem;
+                position: absolute;
+                cursor:pointer;
+            }
+        
+        </style>
+
+
+<ul class="container">
+<div class="first_box">Hover Over</div>
+<li class="boxes">First</li>
+<li class="boxes">Second</li>
+<li class="boxes">Third</li>
+</ul>
+
+<div id="slideshow_box">
+    <img class='img_container'src='https://tse1.mm.bing.net/th?id=OIP.1YM53mG10H_U25iPjop83QHaEo&pid=Api&P=0'>
+</div>
+
+<div id="drag_box">DRAG ME</div>
+
+
+
+
+
+
+<script>
+
+
+//HOVER BOX
+let first_box=document.querySelector('div');
+let boxes=Array.from(document.getElementsByClassName('boxes'));
+
+first_box.addEventListener('mouseout', ()=>{
+
+    boxes.forEach( item=>{
+
+        item.style.display="none";
+
+    }
+
+
+    );
+});
+
+first_box.addEventListener('mouseover', ()=>{
+
+boxes.forEach( item=>{
+
+    item.style.display="block";
+
+}
+);
+});
+
+
+
+
+
+
+//SLIDESHOW
+let slideshow_box=document.getElementById('slideshow_box');
+let img_containers=Array.from(document.getElementsByClassName('img_container'));
+let arr=[];
+arr.push(img_containers[0]);
+
+    
+    let id=null;
+    let right=0;
+    let opacity=1;
+    image_ticker=0;
+
+    function launch () {
+       
+    //animate it
+    if (right==25) {
+    
+    right=0;
+    image_ticker++;
+
+    if (image_ticker==3) {
+        image_ticker=0;
+    }
+
+    clearInterval(id); 
+    setTimeout(frame_container,2500);
+    return;
+    }
+
+    if (image_ticker==0){
+
+    arr[0].setAttribute('src','https://tse3.mm.bing.net/th?id=OIP.eluLjywG2GQ4-gyh0aboHgHaEK&pid=Api&P=0');
+    }
+
+    else if (image_ticker==1){
+    arr[0].setAttribute('src','https://tse1.explicit.bing.net/th?id=OIP.UX5rAO8Odz0VxlhRev_nZwHaEV&pid=Api&P=0');
+    }
+
+    else if (image_ticker==2){
+    arr[0].setAttribute('src','https://tse1.mm.bing.net/th?id=OIP.1YM53mG10H_U25iPjop83QHaEo&pid=Api&P=0');
+    }
+
+    right+=5;
+    opacity+=0.2;
+
+    arr[0].style.right=right+'rem';
+    arr[0].style.opacity=opacity;
+
+    }
+
+
+
+    function frame_container() {
+
+    clearInterval(id);
+    id=setInterval(frame,100);
+
+    function frame () {
+
+        arr[0].style['margin-left']=0;
+
+    if (right==25) {
+
+        right=0;
+
+        arr[0].remove();
+        arr.pop();
+
+        arr.push(document.createElement('img'));
+        arr[0].classList.add('side_containers');
+        slideshow_box.appendChild(arr[0]);
+        
+        clearInterval(id);
+        id=setInterval(launch,70);
+        return;
+        }
+
+    right+=5;
+    opacity-=0.2;
+
+    arr[0].style.right=right+'rem';
+    arr[0].style.opacity=opacity;
+    }}
+
+
+
+setTimeout(frame_container,2500);
+
+
+
+
+
+
+
+//DRAGGABLE BOX
+let box=document.getElementById('drag_box');
+let pos1_x=null;
+let pos1_y=null;
+let pos2_x=null;
+let pos2_y=null;
+
+box.addEventListener('mousedown',function test (event) {
+    
+    pos1_x=event.clientX;
+    pos1_y=event.clientY;
+
+    
+    box.onmousemove=mousedrag;
+
+});
+
+
+
+function mousedrag (event) {
+
+
+    pos2_x=event.clientX;
+    pos2_y=event.clientY;
+
+    pos_x_final=pos2_x-pos1_x;
+    pos_y_final=pos2_y-pos1_y;
+
+    pos1_x=event.clientX;
+    pos1_y=event.clientY;
+
+    box.style.top=(box.offsetTop+pos_y_final)+'px';
+    box.style.left=(box.offsetLeft+pos_x_final)+'px';
+
+   
+}
+
+box.addEventListener('mouseup',function test (event) {
+
+    box.onmousedown=null;
+    box.onmousemove=null;
+
+});
+
+
+
+</script>
+    
+</body>
+</html>
